@@ -73,3 +73,7 @@ The script will:
 - optionally remove volumes (database data)
 - optionally remove images
 - optionally delete the repo folder (uses sudo if needed)
+
+
+### Next.js build note
+This repo uses ESM for the web app. PostCSS config is provided as `postcss.config.cjs` to avoid ESM `module is not defined` build errors.
