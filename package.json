@@ -1,0 +1,17 @@
+{
+  "name": "custom-hosting-panel",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "turbo": "^2.3.4",
+    "typescript": "^5.7.3"
+  },
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint"
+  }
+}
