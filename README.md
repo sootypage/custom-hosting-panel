@@ -77,3 +77,14 @@ The script will:
 
 ### Next.js build note
 This repo uses ESM for the web app. PostCSS config is provided as `postcss.config.cjs` to avoid ESM `module is not defined` build errors.
+
+
+## Update (pull latest from GitHub)
+
+This pulls the newest code from GitHub and rebuilds containers **without deleting your database data**.
+
+```bash
+cd ~/custom-hosting-panel
+chmod +x update.sh
+./update.sh
+```

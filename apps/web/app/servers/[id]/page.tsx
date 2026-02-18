@@ -1,24 +1,60 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
+type Server = {
+  id: string;
+  name: string;
+  game: string;
+  port: number;
+  nodeId?: string;
+  memoryMb?: number;
+  cpu?: number;
+};
+
 export default function ServerPage() {
-  const { id } = useParams();
-  const [server, setServer] = useState(null);
+  const params = useParams<{ id: string }>();
+  const id = params.id;
+
+  const [server, setServer] = useState<Server | null>(null);
+  const [msg, setMsg] = useState<string>("");
+
   const api = process.env.NEXT_PUBLIC_API_URL || "/api";
 
   async function load() {
-    const token = localStorage.getItem("panel_token");
-    const res = await fetch(`${api}/servers/${id}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    const data = await res.json();
-    setServer(data.server);
+    try {
+      const token = localStorage.getItem("panel_token");
+      if (!token) {
+        setMsg("Not logged in. Go to /login");
+        return;
+      }
+
+      const res = await fetch(`${api}/servers/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setMsg(data?.error || "Failed to load server");
+        return;
+      }
+
+      setServer(data.server as Server);
+      setMsg("");
+    } catch (e: any) {
+      setMsg(e?.message || "Error");
+    }
   }
 
-  useEffect(()=>{ load(); },[]);
+  useEffect(() => {
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  if (!server) return <div className="p-6">Loading...</div>;
+  if (!server) {
+    return <div className="p-6 text-sm text-zinc-400">{msg || "Loading..."}</div>;
+  }
 
   return (
     <div className="p-6">
