@@ -10,7 +10,8 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
-say() { echo -e "\n\033[1m$*\033[0m"; }
+say() { echo -e "
+[1m$*[0m" >&2; }
 ask() { read -r -p "$1" REPLY; echo "$REPLY"; }
 
 require_root() {

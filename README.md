@@ -120,3 +120,11 @@ This will ask:
 - HTTP or HTTPS (and domain if HTTPS)
 - Install Panel, Node, or Both
 - Optional panel name
+
+
+### Troubleshooting
+If `docker compose` fails with an error about `.env` containing `\x1b` (ANSI codes), delete `.env` and re-run the installer:
+```bash
+rm -f .env
+sudo bash scripts/install.sh
+```
