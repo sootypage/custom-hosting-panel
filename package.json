@@ -10,8 +10,10 @@
     "typescript": "^5.7.3"
   },
   "scripts": {
-    "dev": "turbo dev",
-    "build": "turbo build",
-    "lint": "turbo lint"
+    "install:all": "npm install --workspaces",
+    "start": "docker compose up -d --build",
+    "dev": "docker compose up --build",
+    "stop": "docker compose down",
+    "logs": "docker compose logs -f"
   }
 }
