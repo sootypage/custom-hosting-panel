@@ -56,3 +56,20 @@ sudo ufw enable
 ## Notes
 - The daemon currently demos starting a **Minecraft Paper** container using `itzg/minecraft-server`.
 - Next step is a proper **Template/Egg system** to support Paper/Forge/Fabric/NeoForge, Rust, Satisfactory, Discord bots, etc.
+
+
+## Uninstall (remove panel from VPS)
+
+From the repo folder on your VPS:
+
+```bash
+cd ~/custom-hosting-panel
+chmod +x uninstall.sh
+./uninstall.sh
+```
+
+The script will:
+- stop/remove containers
+- optionally remove volumes (database data)
+- optionally remove images
+- optionally delete the repo folder (uses sudo if needed)
