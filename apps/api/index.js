@@ -102,8 +102,24 @@ app.post("/servers", async (req, reply) => {
     cpu: Number(cpu || 1),
     port: Number(port || 25565),
     owner: owner || null,
+    containerId: null,
     createdAt: new Date().toISOString()
   };
+
+  try {
+    const node = nodes.get(nodeId);
+    const prov = await fetch(`${node.url}/provision`, {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-node-token": node.token },
+      body: JSON.stringify({ id, name, game, port: rec.port, memoryMb: rec.memoryMb, cpu: rec.cpu }),
+    });
+    const pdata = await prov.json().catch(() => ({}));
+    if (!prov.ok) return reply.code(500).send({ error: "node provision failed", detail: pdata });
+    rec.containerId = pdata.containerId || null;
+  } catch (e) {
+    return reply.code(500).send({ error: "node provision error", detail: String(e?.message || e) });
+  }
+
   servers.set(id, rec);
   return { server: rec };
 });
@@ -200,5 +216,52 @@ app.put("/admin/servers/:id/assign", async (req, reply) => {
   servers.set(s.id, s);
   return { ok: true, server: s };
 });
+
+
+// --- Server actions (owner or admin) ---
+function canAccessServer(req, s) {
+  if (req.user.role === "admin") return true;
+  return s.owner === req.user.userId;
+}
+
+app.get("/servers/:id/status", async (req, reply) => {
+  requireAuth(req, reply);
+
+  const s = servers.get(req.params.id);
+  if (!s) return reply.code(404).send({ error: "not found" });
+  if (!canAccessServer(req, s)) return reply.code(403).send({ error: "forbidden" });
+
+  try {
+    const node = nodes.get(s.nodeId);
+    const res = await fetch(`${node.url}/servers/${s.id}/status`, { headers: { "x-node-token": node.token } });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) return reply.code(500).send({ error: "node status failed", detail: data });
+    return data;
+  } catch (e) {
+    return reply.code(500).send({ error: "status error", detail: String(e?.message || e) });
+  }
+});
+
+async function serverAction(req, reply, action) {
+  requireAuth(req, reply);
+
+  const s = servers.get(req.params.id);
+  if (!s) return reply.code(404).send({ error: "not found" });
+  if (!canAccessServer(req, s)) return reply.code(403).send({ error: "forbidden" });
+
+  try {
+    const node = nodes.get(s.nodeId);
+    const res = await fetch(`${node.url}/servers/${s.id}/${action}`, { method: "POST", headers: { "x-node-token": node.token } });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) return reply.code(500).send({ error: "node action failed", detail: data });
+    return { ok: true };
+  } catch (e) {
+    return reply.code(500).send({ error: "action error", detail: String(e?.message || e) });
+  }
+}
+
+app.post("/servers/:id/start", (req, reply) => serverAction(req, reply, "start"));
+app.post("/servers/:id/stop", (req, reply) => serverAction(req, reply, "stop"));
+app.post("/servers/:id/restart", (req, reply) => serverAction(req, reply, "restart"));
 
 app.listen({ port: 4000, host: "0.0.0.0" });

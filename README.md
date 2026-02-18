@@ -101,3 +101,22 @@ chmod +x update.sh
 ## Admin flow
 - Normal users: only see Dashboard (/servers) and their assigned servers.
 - Admins: use /admin to manage nodes, users, and create/assign servers.
+
+
+## Node daemon (Docker-based game servers)
+This repo includes a node daemon that provisions game server containers using the host Docker socket.
+- Add a node in Admin → Nodes with URL `http://node-daemon:5000` and token `node_secret`.
+- Creating a server in Admin → Servers provisions a Docker container on the same VPS.
+
+**Games (MVP):** Paper/Forge/Fabric/NeoForge via `itzg/minecraft-server`, Rust via `didstopia/rust-server`, Satisfactory via `wolveix/satisfactory-server`.
+
+
+## Easy install (interactive)
+On Ubuntu:
+```bash
+sudo bash scripts/install.sh
+```
+This will ask:
+- HTTP or HTTPS (and domain if HTTPS)
+- Install Panel, Node, or Both
+- Optional panel name

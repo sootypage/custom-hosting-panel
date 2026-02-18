@@ -12,7 +12,7 @@ export default function AdminNodes() {
   const [nodes, setNodes] = useState<NodeRow[]>([]);
   const [msg, setMsg] = useState("");
   const [nodeId, setNodeId] = useState("node1");
-  const [url, setUrl] = useState("http://node1:5000");
+  const [url, setUrl] = useState("http://node-daemon:5000");
   const [token, setToken] = useState("node_secret");
 
   async function authed(path: string, init?: RequestInit) {

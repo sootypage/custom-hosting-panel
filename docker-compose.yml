@@ -1,5 +1,6 @@
 services:
   postgres:
+    profiles: ["panel"]
     image: postgres:16
     restart: unless-stopped
     environment:
@@ -10,10 +11,12 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   redis:
+    profiles: ["panel"]
     image: redis:7
     restart: unless-stopped
 
   api:
+    profiles: ["panel"]
     build: ./apps/api
     restart: unless-stopped
     environment:
@@ -28,6 +31,7 @@ services:
       - "4000"
 
   web:
+    profiles: ["panel"]
     build: ./apps/web
     restart: unless-stopped
     environment:
@@ -38,13 +42,30 @@ services:
       - "3000"
 
   nginx:
-    image: nginx:alpine
+    profiles: ["panel"]
+    image: 
+  node-daemon:
+    profiles: ["node"]
+    build:
+      context: ./apps/node
+    container_name: custom-hosting-panel-node
+    environment:
+      - NODE_TOKEN=node_secret
+      - DATA_DIR=/data
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - node_data:/data
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
+nginx:alpine
     restart: unless-stopped
     depends_on:
       - web
       - api
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
 
