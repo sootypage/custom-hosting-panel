@@ -12,9 +12,10 @@
   },
   "scripts": {
     "install:all": "npm install --workspaces && bash scripts/install.sh",
-    "start": "docker compose up -d --build",
+    "start": "docker compose --profile panel --profile node up -d --build",
     "dev": "docker compose up --build",
-    "stop": "docker compose down",
-    "logs": "docker compose logs -f"
+    "stop": "docker compose --profile panel --profile node down",
+    "logs": "docker compose --profile panel --profile node logs -f",
+    "status": "docker compose --profile panel --profile node ps"
   }
 }

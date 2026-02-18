@@ -50,7 +50,7 @@ services:
       context: ./apps/node
     container_name: custom-hosting-panel-node
     environment:
-      - NODE_TOKEN=node_secret
+      - NODE_TOKEN=${NODE_TOKEN:-node_secret}
       - DATA_DIR=/data
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

@@ -128,3 +128,11 @@ If `docker compose` fails with an error about `.env` containing `\x1b` (ANSI cod
 rm -f .env
 sudo bash scripts/install.sh
 ```
+
+## Node token (important)
+
+The panel and node daemon must share the same `NODE_TOKEN`.
+
+- The installer writes `NODE_TOKEN` into `.env`.
+- In the Admin UI when adding a node, paste the same value.
+- If Panel + Node are on the same VPS (same docker compose stack), use node URL: `http://node-daemon:5000`.
