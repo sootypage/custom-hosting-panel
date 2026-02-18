@@ -88,3 +88,16 @@ cd ~/custom-hosting-panel
 chmod +x update.sh
 ./update.sh
 ```
+
+
+### Web routes
+- `/` redirects to `/login`
+- `/login` login
+- `/servers` list servers
+- `/servers/new` create server
+- `/servers/[id]` server details
+
+
+## Admin flow
+- Normal users: only see Dashboard (/servers) and their assigned servers.
+- Admins: use /admin to manage nodes, users, and create/assign servers.
